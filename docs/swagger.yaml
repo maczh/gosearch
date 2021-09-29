@@ -1,0 +1,473 @@
+info:
+  contact: {}
+  version: 1.0.2(gosearch)
+paths:
+  /gosearch/add:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 插入文档到全文索引库<br>说明：1.插入的doc文档只允许一层结构，不要做嵌套<br>2.允许字符串数组字段参与全文检索<br>3.所有包含有中文的字段将自动生成一个加Spy后缀的拼音首字母字段，用于支持拼音首字母检索，不输出在搜索结果中<br>4.数据插入后将自动生成一个名为id的uuid值字段，原有id字段将会被覆盖
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        type: string
+      - description: 文档数据,JSON类型
+        in: formData
+        name: doc
+        required: true
+        type: string
+      - description: 模糊搜索字段列表,JSON数组格式
+        in: formData
+        name: searchFields
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 插入文档到全文索引库API
+      tags:
+      - 数据维护
+  /gosearch/add/batch:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 批量插入文档到全文索引库
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        type: string
+      - description: 文档数据数组,JSON数组类型
+        in: formData
+        name: docs
+        required: true
+        type: string
+      - description: 模糊搜索字段列表,JSON数组格式
+        in: formData
+        name: searchFields
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 批量插入文档到全文索引库API
+      tags:
+      - 数据维护
+  /gosearch/del:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 从全文索引库中删除文档
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        required: true
+        type: string
+      - description: 文档id,在插入时返回的id值
+        in: formData
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 从全文索引库中删除文档API
+      tags:
+      - 数据维护
+  /gosearch/del/batch:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 从全文索引库中批量删除文档
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        type: string
+      - description: 文档id列表,JSON数组格式
+        in: formData
+        name: ids
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 从全文索引库中批量删除文档API
+      tags:
+      - 数据维护
+  /gosearch/del/database:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 删除数据库
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 删除数据库API
+      tags:
+      - 数据维护
+  /gosearch/del/query:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 按条件从全文索引库中删除文档
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        type: string
+      - description: 查找相等条件,JSON格式，精确查找
+        in: formData
+        name: query
+        type: string
+      - description: 一个字段符合多个值之一，支持字符串、int、float类型的字段，相当于SQL的in,类似 AND field in ('value1','value2'),JSON格式，{字段名:[值1,值2...]},可多字段
+        in: formData
+        name: in
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 按条件从全文索引库中删除文档API
+      tags:
+      - 数据维护
+  /gosearch/del/table:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 从全文索引库中删除表
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 从全文索引库中删除表API
+      tags:
+      - 数据维护
+  /gosearch/query:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 按组合条件从全文索引库中搜索文档<br>说明:1.输入中文内容的搜索建议放在mustWildcard中，将同时自动生成一个拼音首字母放在mustWildcard中<br>2.由于没有分词，所以中文将自动拆字，只要包含中文串中的一个字都会命中，因此同时自动加上简拼搜索会大幅度提升命中率<br>3.多个组合条件精确查找的也都放在must当中，比如shopId=xxxx and userId=xxxx and data like '%xx%'<br>4.如果需要更精确的结果，建议在搜索结果中再次进行一遍过滤
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        required: true
+        type: string
+      - description: OR相等查找条件,JSON格式，{字段名:值},即field1=value1 OR field2=value2,可多字段
+        in: formData
+        name: should
+        type: string
+      - description: OR模糊搜索，相当于
+        in: formData
+        name: shouldWildcard
+        type: string
+      - description: AND相等查找条件,JSON格式，{字段名:值},即field1=value1 AND field2=value2,可多字段，若某个字段的值为JSON数组，则相当于in查询
+        in: formData
+        name: must
+        type: string
+      - description: AND模糊搜索，相当于*关键字*,类似 AND field like '%keyword%',JSON格式，{字段名:关键字},可多字段
+        in: formData
+        name: mustWildcard
+        type: string
+      - description: 不相等,JSON格式，{字段名:值},类似 AND field <> value,可多字段
+        in: formData
+        name: not
+        type: string
+      - description: 不包含，相当于*关键字*,类似 AND NOT (field like '%keyword%'),JSON格式，{字段名:关键字},可多字段
+        in: formData
+        name: notWildcard
+        type: string
+      - description: 一个字段符合多个值之一，支持字符串、int、float类型的字段，相当于SQL的in,类似 AND field in ('value1','value2'),JSON格式，{字段名:[值1,值2...]},可多字段
+        in: formData
+        name: in
+        type: string
+      - description: 一个字符串数组字段符合多个值之一,仅支持字符串数组类型字段，原始数据集合与查询数据集合有交集则匹配,JSON格式，{字段名:[值1,值2...]},可多字段
+        in: formData
+        name: contains
+        type: string
+      - description: 按>/>=/</<=搜索，类似MongoDB，gt/gte/lt/lte,JSON格式，如:{字段名:{
+        in: formData
+        name: range
+        type: string
+      - description: 搜索结果排序方式，字段名JSON数组，字段名前加+号代表正排序，加-号代表倒排序
+        in: formData
+        name: sort
+        type: string
+      - description: 分页偏移量，从第几条开始的偏移量，默认为0
+        in: formData
+        name: offset
+        type: integer
+      - description: 分页的单页记录数，默认不分页
+        in: formData
+        name: size
+        type: integer
+      - description: 是否准精确搜索 1-是 0-否， 默认为1
+        in: formData
+        name: almost
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 按组合条件从全文索引库中搜索文档API
+      tags:
+      - 全文检索
+  /gosearch/suggest:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 获取下拉补全列表或热搜词
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        required: true
+        type: string
+      - description: 个性化定制标识编码，如用户id、文件id等，若不传则为同一张表共用的热搜词
+        in: formData
+        name: customize
+        type: string
+      - description: 关键字前缀，若为空则返回热搜列表
+        in: formData
+        name: prefix
+        type: string
+      - description: 返回记录数，默认10条
+        in: formData
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 获取下拉补全列表或热搜词
+      tags:
+      - 热搜补全
+  /gosearch/suggest/del:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 删除关键字
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        required: true
+        type: string
+      - description: 搜索关键字
+        in: formData
+        name: keyword
+        required: true
+        type: string
+      - description: 个性化定制标识编码，如用户id、文件id等，若不传则为同一张表共用的热搜词
+        in: formData
+        name: customize
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 删除关键字
+      tags:
+      - 热搜补全
+  /gosearch/suggest/incr:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 增加搜索关键字一次或新增关键字
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        required: true
+        type: string
+      - description: 搜索关键字
+        in: formData
+        name: keyword
+        required: true
+        type: string
+      - description: 个性化定制标识编码，如用户id、文件id等，若不传则为同一张表共用的热搜词
+        in: formData
+        name: customize
+        type: string
+      - description: 关键字增量值
+        in: formData
+        name: incr
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 增加搜索关键字一次或新增关键字
+      tags:
+      - 热搜补全
+  /gosearch/update:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 从全文索引库中更新文档
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        type: string
+      - description: 文档id,在插入时返回的id值
+        in: formData
+        name: id
+        required: true
+        type: string
+      - description: 要更新的字段内容,JSON格式
+        in: formData
+        name: update
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 从全文索引库中更新文档API
+      tags:
+      - 数据维护
+  /gosearch/update/query:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 按条件从全文索引库中更新文档
+      parameters:
+      - description: 数据库名称
+        in: formData
+        name: database
+        required: true
+        type: string
+      - description: 表名称
+        in: formData
+        name: table
+        type: string
+      - description: 查找条件,JSON格式，精确查找
+        in: formData
+        name: query
+        required: true
+        type: string
+      - description: 要更新的字段内容,JSON格式
+        in: formData
+        name: update
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      summary: 按条件从全文索引库中更新文档API
+      tags:
+      - 数据维护
+swagger: "2.0"

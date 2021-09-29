@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="4bdd523d-0886-4fdb-89bb-6034f245b372" name="测试" url="http://syb.ququ.im">
+        <fileTransfer host="syb.ququ.im" port="42639" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="42639" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="d146b7ec-fc65-420b-9aaf-49ad0202c25f" name="生产-通道1" url="http://47.111.168.182">
+        <fileTransfer host="47.111.168.182" port="42639" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="42639" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

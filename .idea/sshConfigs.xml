@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="syb.ququ.im" id="4359010c-b985-47a2-ae69-09d8d5f9e0fd" port="42639" customName="测试" nameFormat="CUSTOM" username="root">
+        <option name="customName" value="测试" />
+      </sshConfig>
+      <sshConfig authType="PASSWORD" connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="47.111.168.182" id="33f0917a-ae41-48ab-983b-b14f7e3f8eb4" port="42639" customName="生产-通道1" nameFormat="CUSTOM" username="root">
+        <option name="customName" value="生产-通道1" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>
